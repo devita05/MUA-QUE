@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MUA-QUE — Download App</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #13131a;
+      --card: #1a1a24;
+      --border: #2a2a3a;
+      --accent: #7c6bff;
+      --accent2: #ff6b9d;
+      --accent3: #6bffe0;
+      --text: #f0f0f8;
+      --muted: #8888aa;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Background grid */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(124,107,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(124,107,255,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Glow blobs */
+    .blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.12;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .blob-1 { width: 600px; height: 600px; background: var(--accent); top: -200px; right: -100px; animation: drift 12s ease-in-out infinite alternate; }
+    .blob-2 { width: 400px; height: 400px; background: var(--accent2); bottom: 100px; left: -150px; animation: drift 16s ease-in-out infinite alternate-reverse; }
+    .blob-3 { width: 300px; height: 300px; background: var(--accent3); top: 50%; left: 40%; animation: drift 10s ease-in-out infinite alternate; }
+
+    @keyframes drift {
+      from { transform: translate(0, 0) scale(1); }
+      to   { transform: translate(40px, 30px) scale(1.1); }
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.2rem 3rem;
+      background: rgba(10,10,15,0.7);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.4rem;
+      letter-spacing: 0.1em;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .nav-badge {
+      font-size: 0.7rem;
+      font-weight: 500;
+      background: rgba(124,107,255,0.15);
+      border: 1px solid rgba(124,107,255,0.3);
+      color: var(--accent);
+      padding: 0.3rem 0.8rem;
+      border-radius: 999px;
+      letter-spacing: 0.05em;
+    }
+
+    /* MAIN */
+    main { position: relative; z-index: 1; }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 8rem 2rem 4rem;
+    }
+
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.75rem; font-weight: 500; letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent3);
+      border: 1px solid rgba(107,255,224,0.2);
+      background: rgba(107,255,224,0.05);
+      padding: 0.4rem 1rem;
+      border-radius: 999px;
+      margin-bottom: 2rem;
+      animation: fadeUp 0.8s ease both;
+    }
+    .hero-tag::before { content: '●'; font-size: 0.5rem; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(3.5rem, 10vw, 7rem);
+      font-weight: 800;
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+      animation: fadeUp 0.8s 0.1s ease both;
+    }
+    h1 .line-1 { display: block; color: var(--text); }
+    h1 .line-2 {
+      display: block;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 50%, var(--accent3) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-desc {
+      max-width: 520px;
+      font-size: 1.1rem;
+      line-height: 1.7;
+      color: var(--muted);
+      margin-bottom: 3rem;
+      animation: fadeUp 0.8s 0.2s ease both;
+    }
+
+    .btn-group {
+      display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
+      animation: fadeUp 0.8s 0.3s ease both;
+    }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      padding: 1rem 2rem;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      letter-spacing: 0.05em;
+      border-radius: 12px;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 8px 32px rgba(124,107,255,0.3);
+    }
+    .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 16px 48px rgba(124,107,255,0.4); }
+
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      padding: 1rem 2rem;
+      background: transparent;
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      text-decoration: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .btn-secondary:hover { border-color: var(--accent); background: rgba(124,107,255,0.05); }
+
+    /* STATS */
+    .stats {
+      display: flex; gap: 3rem; justify-content: center; flex-wrap: wrap;
+      margin-top: 5rem;
+      padding: 2.5rem 3rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      animation: fadeUp 0.8s 0.4s ease both;
+    }
+    .stat { text-align: center; }
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 2rem; font-weight: 800;
+      background: linear-gradient(135deg, var(--accent), var(--accent3));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .stat-label { font-size: 0.8rem; color: var(--muted); margin-top: 0.2rem; letter-spacing: 0.05em; }
+
+    /* SECTION */
+    section { padding: 5rem 2rem; max-width: 1100px; margin: 0 auto; }
+
+    .section-label {
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--accent);
+      margin-bottom: 1rem;
+    }
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+
+    /* FEATURES */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+    .feature-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      transition: border-color 0.3s, transform 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .feature-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(124,107,255,0.05), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .feature-card:hover { border-color: rgba(124,107,255,0.4); transform: translateY(-4px); }
+    .feature-card:hover::before { opacity: 1; }
+
+    .feature-icon {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 1.2rem;
+    }
+    .icon-purple { background: rgba(124,107,255,0.15); }
+    .icon-pink   { background: rgba(255,107,157,0.15); }
+    .icon-teal   { background: rgba(107,255,224,0.15); }
+    .icon-orange { background: rgba(255,180,107,0.15); }
+    .icon-blue   { background: rgba(107,180,255,0.15); }
+    .icon-green  { background: rgba(107,255,140,0.15); }
+
+    .feature-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700; font-size: 1.1rem;
+      margin-bottom: 0.6rem;
+    }
+    .feature-desc { color: var(--muted); font-size: 0.9rem; line-height: 1.6; }
+
+    /* RELEASE */
+    .release-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2.5rem;
+      margin-top: 3rem;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 2rem;
+    }
+    .release-info h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.5rem; font-weight: 800;
+      margin-bottom: 0.5rem;
+    }
+    .release-meta { display: flex; gap: 1.5rem; flex-wrap: wrap; margin-top: 1rem; }
+    .meta-item { display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; color: var(--muted); }
+    .meta-item span:first-child { color: var(--accent); }
+
+    .version-badge {
+      display: inline-block;
+      background: rgba(107,255,224,0.1);
+      border: 1px solid rgba(107,255,224,0.3);
+      color: var(--accent3);
+      font-size: 0.75rem; font-weight: 600;
+      padding: 0.3rem 0.8rem;
+      border-radius: 999px;
+      margin-bottom: 0.8rem;
+      letter-spacing: 0.05em;
+    }
+
+    /* REQUIREMENTS */
+    .req-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 3rem;
+    }
+    .req-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+    }
+    .req-icon { font-size: 2rem; margin-bottom: 0.8rem; }
+    .req-label { font-size: 0.75rem; color: var(--muted); margin-bottom: 0.3rem; letter-spacing: 0.05em; text-transform: uppercase; }
+    .req-value { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem; }
+
+    /* FOOTER */
+    footer {
+      position: relative; z-index: 1;
+      text-align: center;
+      padding: 3rem 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+    footer strong { color: var(--text); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      nav { padding: 1rem 1.5rem; }
+      .stats { gap: 1.5rem; padding: 1.5rem; }
+      .release-card { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <nav>
+    <div class="nav-logo">MUA-QUE</div>
+    <div class="nav-badge">v1.1 · Stable</div>
+  </nav>
+
+  <main>
+    <!-- HERO -->
+    <div class="hero">
+      <div class="hero-tag">Rilis Resmi · Android App</div>
+      <h1>
+        <span class="line-1">Selamat Datang di</span>
+        <span class="line-2">MUA-QUE</span>
+      </h1>
+      <p class="hero-desc">
+        Aplikasi Android modern dengan fitur lengkap, terhubung ke Firebase, 
+        peta interaktif, dan pengalaman pengguna yang mulus di semua perangkat.
+      </p>
+      <div class="btn-group">
+        <a href="app-debug.apk" class="btn-primary" download>
+          ⬇ Download APK
+        </a>
+        <a href="https://github.com" class="btn-secondary" target="_blank">
+          ⭐ GitHub Repo
+        </a>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-num">1.1</div>
+          <div class="stat-label">Versi Terbaru</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">Android 7+</div>
+          <div class="stat-label">Minimum OS</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">2 GB</div>
+          <div class="stat-label">Min. RAM</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">Firebase</div>
+          <div class="stat-label">Backend</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FITUR -->
+    <section>
+      <div class="section-label">Apa yang ada di dalamnya</div>
+      <div class="section-title">Fitur Unggulan</div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon icon-purple">🔐</div>
+          <div class="feature-title">Firebase Authentication</div>
+          <div class="feature-desc">Login & registrasi aman menggunakan Firebase Auth. Data pengguna terenkripsi dan terlindungi.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon icon-teal">🗺️</div>
+          <div class="feature-title">Peta Interaktif</div>
+          <div class="feature-desc">Integrasi OSMDroid dan Google Location Services untuk navigasi dan peta real-time yang akurat.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon icon-pink">🔥</div>
+          <div class="feature-title">Firebase Realtime Database</div>
+          <div class="feature-desc">Data tersinkronisasi secara real-time antar perangkat menggunakan Firebase Database.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon icon-orange">🖼️</div>
+          <div class="feature-title">Load Gambar Cepat</div>
+          <div class="feature-desc">Powered by Glide untuk loading gambar yang ringan dan efisien, cocok untuk RAM terbatas.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon icon-blue">📋</div>
+          <div class="feature-title">View Binding</div>
+          <div class="feature-desc">UI yang responsif dan cepat dengan ViewBinding dan RecyclerView yang dioptimasi.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon icon-green">⚡</div>
+          <div class="feature-title">Ringan & Optimal</div>
+          <div class="feature-desc">Dioptimasi untuk perangkat RAM 2GB dengan minifikasi kode dan kompresi resource otomatis.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RELEASE -->
+    <section>
+      <div class="section-label">Unduhan</div>
+      <div class="section-title">Rilis Terbaru</div>
+      <div class="release-card">
+        <div class="release-info">
+          <div class="version-badge">● STABLE RELEASE</div>
+          <h3>MUA-QUE v1.1</h3>
+          <p style="color:var(--muted);font-size:0.9rem;">Build stabil dengan perbaikan bug dan optimasi performa untuk semua perangkat Android.</p>
+          <div class="release-meta">
+            <div class="meta-item"><span>📅</span> 07 Mei 2026</div>
+            <div class="meta-item"><span>🏷️</span> versionCode 2</div>
+            <div class="meta-item"><span>📦</span> app-debug.apk</div>
+            <div class="meta-item"><span>🤖</span> Android 7.0+</div>
+          </div>
+        </div>
+        <a href="app-debug.apk" class="btn-primary" download style="white-space:nowrap;">
+          ⬇ Download APK
+        </a>
+      </div>
+    </section>
+
+    <!-- REQUIREMENTS -->
+    <section>
+      <div class="section-label">Spesifikasi</div>
+      <div class="section-title">Persyaratan Perangkat</div>
+      <div class="req-grid">
+        <div class="req-card">
+          <div class="req-icon">🤖</div>
+          <div class="req-label">OS Minimum</div>
+          <div class="req-value">Android 7.0</div>
+        </div>
+        <div class="req-card">
+          <div class="req-icon">🎯</div>
+          <div class="req-label">Target SDK</div>
+          <div class="req-value">Android 14</div>
+        </div>
+        <div class="req-card">
+          <div class="req-icon">💾</div>
+          <div class="req-label">RAM Minimum</div>
+          <div class="req-value">2 GB</div>
+        </div>
+        <div class="req-card">
+          <div class="req-icon">📡</div>
+          <div class="req-label">Koneksi</div>
+          <div class="req-value">Internet</div>
+        </div>
+        <div class="req-card">
+          <div class="req-icon">📍</div>
+          <div class="req-label">Izin</div>
+          <div class="req-value">Lokasi, Storage</div>
+        </div>
+        <div class="req-card">
+          <div class="req-icon">🏗️</div>
+          <div class="req-label">Arsitektur</div>
+          <div class="req-value">ARM64 / x86</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CARA INSTALL -->
+    <section>
+      <div class="section-label">Panduan</div>
+      <div class="section-title">Cara Install</div>
+      <div style="margin-top:2rem;display:flex;flex-direction:column;gap:1rem;">
+        {[
+          ["1", "Download APK", "Klik tombol Download APK di atas untuk mengunduh file instalasi."],
+          ["2", "Aktifkan Unknown Sources", "Buka Pengaturan → Keamanan → Aktifkan 'Sumber Tidak Dikenal'."],
+          ["3", "Install APK", "Buka file APK yang sudah diunduh dan ikuti proses instalasi."],
+          ["4", "Buka Aplikasi", "Jalankan MUA-QUE dan login menggunakan akun yang terdaftar."]
+        ].map(([num, title, desc]) => ``}
+      </div>
+      <div style="margin-top:2rem;display:flex;flex-direction:column;gap:1rem;">
+        <div style="display:flex;gap:1.5rem;align-items:flex-start;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.5rem;">
+          <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:0.9rem;flex-shrink:0;">1</div>
+          <div><div style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:0.3rem;">Download APK</div><div style="color:var(--muted);font-size:0.9rem;">Klik tombol Download APK di atas untuk mengunduh file instalasi.</div></div>
+        </div>
+        <div style="display:flex;gap:1.5rem;align-items:flex-start;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.5rem;">
+          <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:0.9rem;flex-shrink:0;">2</div>
+          <div><div style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:0.3rem;">Aktifkan Unknown Sources</div><div style="color:var(--muted);font-size:0.9rem;">Buka Pengaturan → Keamanan → Aktifkan "Sumber Tidak Dikenal".</div></div>
+        </div>
+        <div style="display:flex;gap:1.5rem;align-items:flex-start;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.5rem;">
+          <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:0.9rem;flex-shrink:0;">3</div>
+          <div><div style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:0.3rem;">Install APK</div><div style="color:var(--muted);font-size:0.9rem;">Buka file APK yang sudah diunduh dan ikuti proses instalasi.</div></div>
+        </div>
+        <div style="display:flex;gap:1.5rem;align-items:flex-start;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.5rem;">
+          <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:0.9rem;flex-shrink:0;">4</div>
+          <div><div style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:0.3rem;">Buka Aplikasi</div><div style="color:var(--muted);font-size:0.9rem;">Jalankan MUA-QUE dan login menggunakan akun yang sudah terdaftar.</div></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.2rem;margin-bottom:0.5rem;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">MUA-QUE</div>
+    <p>Dibuat dengan ❤️ · <strong>v1.1</strong> · © 2026 MUA-QUE Team</p>
+    <p style="margin-top:0.5rem;font-size:0.75rem;">Dirilis melalui GitHub Pages</p>
+  </footer>
+
+</body>
+</html>
